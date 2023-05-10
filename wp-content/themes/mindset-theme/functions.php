@@ -48,6 +48,12 @@ function fwd_setup()
 		*/
 	add_theme_support('post-thumbnails');
 
+	// Hardcrop 
+	add_image_size('portrait-blog', 200, 250, true);
+
+	add_image_size('latest-blog-post', 400, 200, true);
+
+
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus(
 		array(
@@ -203,3 +209,82 @@ require get_template_directory() . '/inc/customizer.php';
 if (defined('JETPACK__VERSION')) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
+
+// Add theme colour meta tag 
+
+function fwd_theme_color()
+{
+	echo '<meta name="theme-color" content="#fff200">';
+}
+add_action('wp_head', 'fwd_theme_color', 1);
+
+
+// change excerpt length to 20 words 
+
+function fwd_excerpt_length($length)
+{
+	return 20;
+}
+add_filter('excerpt_length', 'fwd_excerpt_length', 999, 1);
+
+// change excerpt more to link 
+function fwd_excerpt_more($more)
+{
+	$more = '... <a class="read-more" href="' . esc_url(get_permalink()) . '">Continue Reading</a>';
+	return $more;
+}
+add_filter('excerpt_more', 'fwd_excerpt_more');
+
+// Add block template for test blocks page 
+function fwd_block_editor_templates()
+{
+	// Replace '14' with the Page ID
+	if (isset($_GET['post']) && '64' == $_GET['post']) {
+		$post_type_object = get_post_type_object('page');
+		$post_type_object->template = array(
+			// define blocks here...
+			array(
+				'core/paragraph',
+				array(
+					'placeholder' => 'Add your introduction here...'
+				)
+			),
+			array(
+				'core/heading',
+				array(
+					'placeholder' => 'Add your heading here...',
+					'level' => 2
+				)
+			),
+			array(
+				'core/image',
+				array(
+					'align' => 'left',
+					'sizeSlug' => 'medium'
+				)
+			),
+			array(
+				'core/paragraph',
+				array(
+					'placeholder' => 'Add text here...'
+				)
+			),
+		);
+		$post_type_object->template_lock = 'all';
+	}
+}
+add_action('init', 'fwd_block_editor_templates');
+
+// remove block editor from any pages in the array below 
+function fwd_post_filter($use_block_editor, $post)
+{
+	// Change 112 to your Page ID
+	$page_ids = array(12);
+	if (in_array($post->ID, $page_ids)) {
+		return false;
+	} else {
+		return $use_block_editor;
+	}
+	$post_type_object->template_lock = 'all';
+}
+add_filter('use_block_editor_for_post', 'fwd_post_filter', 10, 2);
