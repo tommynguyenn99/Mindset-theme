@@ -32,23 +32,7 @@ get_header();
 	endwhile; // End of the loop.
 	?>
 
-	<?php
-	if (function_exists('get_field')) {
-
-		if (get_field('address')) {
-			echo '<pp>';
-			the_field('address');
-			echo '</p>';
-		}
-
-		if (get_field('email_address_required_')) {
-			echo '<p>';
-			the_field('email_address_required_');
-			echo '</p>';
-		}
-	}
-
-	?>
+	<a href="#" class="topbutton"></a>
 </main><!-- #primary -->
 
 <?php

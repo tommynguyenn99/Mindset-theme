@@ -177,10 +177,51 @@ add_action('widgets_init', 'fwd_widgets_init');
  */
 function fwd_scripts()
 {
+
+	// another font for headings 
+	wp_enqueue_style(
+		// unique name 
+		'fwd-googlefonts-heading',
+
+		// url to css file
+		'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap',
+
+		// dependancies 
+		array(),
+
+		// set version num to null 
+		null
+
+	);
+
+
+
+	wp_enqueue_style(
+		// unique name 
+		'fwd-googlefonts',
+
+		// url to css file
+		'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap',
+
+		// dependancies 
+		array(),
+
+		// set version num to null 
+		null
+
+	);
+
 	wp_enqueue_style('fwd-style', get_stylesheet_uri(), array(), _S_VERSION);
 	wp_style_add_data('fwd-style', 'rtl', 'replace');
 
 	wp_enqueue_script('fwd-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true);
+
+	// Enqueue Swiper on the Homepage
+	if (is_front_page()) {
+		wp_enqueue_style('swiper-styles', get_template_directory_uri() . '/css/swiper-bundle.css', array(), '9.3.1');
+		wp_enqueue_script('swiper-scripts', get_template_directory_uri() . '/js/swiper-bundle.min.js', array(), '9.3.1', true);
+		wp_enqueue_script('swiper-settings', get_template_directory_uri() . '/js/swiper-settings.js', array('swiper-scripts'), _S_VERSION, true);
+	}
 
 	if (is_singular() && comments_open() && get_option('thread_comments')) {
 		wp_enqueue_script('comment-reply');
@@ -191,6 +232,10 @@ add_action('wp_enqueue_scripts', 'fwd_scripts');
 /**
  * Custom template tags for this theme.
  */
+
+require get_template_directory() . '/inc/cpt-taxonomy.php';
+
+
 require get_template_directory() . '/inc/template-tags.php';
 
 /**
@@ -288,3 +333,16 @@ function fwd_post_filter($use_block_editor, $post)
 	$post_type_object->template_lock = 'all';
 }
 add_filter('use_block_editor_for_post', 'fwd_post_filter', 10, 2);
+
+
+// add arrow function 
+function my_scripts_method()
+{
+	wp_enqueue_script(
+		'custom-script',
+		get_stylesheet_directory_uri() . '/js/topbutton.js',
+		array('jquery')
+	);
+}
+
+add_action('wp_enqueue_scripts', 'my_scripts_method');

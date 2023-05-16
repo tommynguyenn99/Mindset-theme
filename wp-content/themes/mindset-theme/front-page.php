@@ -16,9 +16,10 @@ get_header();
     <?php
     while (have_posts()) :
         the_post();
-
-        get_template_part('template-parts/content', 'page');
     ?>
+
+        <h1><?php the_title(); ?></h1>
+
         <section class="home-intro">
             <?php
             // Load intro section from seperate page using WP_Query 
@@ -42,7 +43,37 @@ get_header();
         </section>
 
         <section class="home-work">
+            <h2>Featured Works</h2>
+            <?php
+            $args = array(
+                // grab me a max of 4 post, in the work category, only if they are marked with featured front page
+                'post_type'      => 'fwd-work',
+                'posts_per_page' => 4,
+                'tax_query'      => array(
+                    array(
+                        'taxonomy' => 'fwd-featured',
+                        'field'    => 'slug',
+                        'terms'    => 'front-page'
+                    ),
+                ),
+            );
+            $query = new WP_Query($args);
 
+            if ($query->have_posts()) {
+                while ($query->have_posts()) {
+                    $query->the_post();
+            ?>
+                    <article>
+                        <a href="<?php the_permalink(); ?>">
+                            <?php the_post_thumbnail('medium'); ?>
+                            <h3><?php the_title(); ?></h3>
+                        </a>
+                    </article>
+            <?php
+                }
+                wp_reset_postdata();
+            }
+            ?>
         </section>
 
         <section class="home-work"></section>
@@ -85,7 +116,33 @@ get_header();
             ?>
         </section>
 
-        <section class="home-slider"></section>
+        <section class="home-slider">
+            <?php
+            $args = array(
+                'post_type'      => 'fwd-testimonial',
+                'posts_per_page' => -1
+            );
+
+            $query = new WP_Query($args);
+
+            if ($query->have_posts()) : ?>
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <?php while ($query->have_posts()) : $query->the_post(); ?>
+                            <div class="swiper-slide">
+                                <?php the_content(); ?>
+                            </div>
+                        <?php endwhile; ?>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+            <?php
+                wp_reset_postdata();
+            endif;
+            ?>
+        </section>
 
         <section class="home-blog">
             <!-- Translate into another language -->
@@ -131,9 +188,9 @@ get_header();
     endwhile; // End of the loop.
     ?>
 
+    <a href="#" class="topbutton"></a>
 
 </main><!-- #primary -->
 
 <?php
-get_sidebar();
 get_footer();

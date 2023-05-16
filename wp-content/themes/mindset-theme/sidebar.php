@@ -9,62 +9,23 @@
  */
 
 ?>
-<div id="sidebar-2" class="sidebar">
+<?php
+if (!is_active_sidebar('sidebar-1') || !is_active_sidebar('sidebar-2')) {
+	return;
+}
+?>
+<aside id="secondary" class="widget-area">
+	<?php
+	if (is_page()) {
+		dynamic_sidebar('sidebar-2');
+	} else {
+		dynamic_sidebar('sidebar-1');
+	}
+	?>
+	<?php get_template_part('template-parts/work', 'categories'); ?>
 
-	<?php do_action('before_sidebar'); ?>
+	<!-- add testimontal to sidebar -->
+	<?php get_template_part('template-parts/random'); ?>
 
-	<?php if (!dynamic_sidebar('sidebar-1')) : ?>
 
-		<aside id="search" class="widget widget_search">
-			<?php get_search_form(); ?>
-		</aside><!-- #search -->
-
-		<aside id="archives" class"widget">
-			<h3 class="widget-title"><?php _e('Archives', 'shape'); ?></h3>
-			<ul>
-				<?php wp_get_archives(array('type' => 'monthly')); ?>
-			</ul>
-		</aside><!-- #archives -->
-
-		<aside id="meta" class="widget">
-			<h3 class="widget-title"><?php _e('Meta', 'shape'); ?></h3>
-			<ul>
-				<?php wp_register(); ?>
-				<li><?php wp_loginout(); ?></li>
-				<?php wp_meta(); ?>
-			</ul>
-		</aside><!-- #meta -->
-
-	<?php endif; ?>
-
-</div><!-- #primary -->
-
-<div id="sidebar-2" class="sidebar">
-
-	<?php do_action('before_sidebar'); ?>
-
-	<?php if (!dynamic_sidebar('sidebar-2')) : ?>
-
-		<aside id="search" class="widget widget_search">
-			<?php get_search_form(); ?>
-		</aside><!-- #search -->
-
-		<aside id="archives" class"widget">
-			<h3 class="widget-title"><?php _e('Archives', 'shape'); ?></h3>
-			<ul>
-				<?php wp_get_archives(array('type' => 'monthly')); ?>
-			</ul>
-		</aside><!-- #archives -->
-
-		<aside id="meta" class="widget">
-			<h3 class="widget-title"><?php _e('Meta', 'shape'); ?></h3>
-			<ul>
-				<?php wp_register(); ?>
-				<li><?php wp_loginout(); ?></li>
-				<?php wp_meta(); ?>
-			</ul>
-		</aside><!-- #meta -->
-
-	<?php endif; ?>
-
-</div><!-- #primary -->
+</aside>
