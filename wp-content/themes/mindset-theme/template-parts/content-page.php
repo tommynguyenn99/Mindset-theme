@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template part for displaying page content in page.php
  *
@@ -11,7 +12,7 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<header class="entry-header">
-		<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
+		<?php the_title('<h1 class="entry-title">', '</h1>'); ?>
 	</header><!-- .entry-header -->
 
 	<?php fwd_post_thumbnail(); ?>
@@ -22,10 +23,29 @@
 
 		wp_link_pages(
 			array(
-				'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'fwd' ),
+				'before' => '<div class="page-links">' . esc_html__('Pages:', 'fwd'),
 				'after'  => '</div>',
 			)
 		);
+		?>
+
+		<!-- shows only on contact page -->
+		<?php
+		if (function_exists('get_field')) {
+
+			if (get_field('address')) {
+				echo '<pp>';
+				the_field('address');
+				echo '</p>';
+			}
+
+			if (get_field('email_address_required_')) {
+				echo '<p>';
+				the_field('email_address_required_');
+				echo '</p>';
+			}
+		}
+
 		?>
 	</div><!-- .entry-content -->
 
