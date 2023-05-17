@@ -40,6 +40,7 @@ get_header();
 			'taxonomy' =>  $taxonomy
 		)
 	);
+
 	if ($terms && !is_wp_error($terms)) {
 		foreach ($terms as $term) {
 			$args = array(
@@ -56,28 +57,64 @@ get_header();
 				),
 			);
 
+
 			$query = new WP_Query($args);
 
-			if ($query->have_posts()) {
-				// Output Term name.
-				echo '<h2>' . $term->name . '</h2>';
+			while ($query->have_posts()) {
+				$query->the_post();
+
+				if (function_exists('get_field')) {
+					if (get_field('services_text_field')) {
 
 
-				// Output Content.
-				while ($query->have_posts()) {
-					$query->the_post();
-
-					if (function_exists('get_field')) {
-						if (get_field('services_text_field')) {
-							echo '<h3 id="' . esc_attr(get_the_ID()) . '">' . esc_html(get_the_title()) . '</h3>';
-							the_field('services_text_field');
-						}
+						echo '<a href="#' . esc_attr(get_the_ID()) . '">' . esc_html(get_the_title()) . '</a>';
 					}
 				}
-				wp_reset_postdata();
 			}
+			wp_reset_postdata();
 		}
 	}
+
+
+
+	// line 
+
+
+	if ($terms && !is_wp_error($terms)) {
+		foreach ($terms as $term) {
+			$args = array(
+				'post_type'      => 'fwd_services_post',
+				'posts_per_page' => -1,
+				'order'          => 'ASC',
+				'orderby'        => 'title',
+				'tax_query'      => array(
+					array(
+						'taxonomy' => $taxonomy,
+						'field'    => 'slug',
+						'terms'    => $term->slug,
+					)
+				),
+			);
+
+
+			$query = new WP_Query($args);
+
+			while ($query->have_posts()) {
+				$query->the_post();
+
+				if (function_exists('get_field')) {
+					if (get_field('services_text_field')) {
+
+
+						echo '<h2 id="' . esc_attr(get_the_ID()) . '">' . esc_html(get_the_title()) . '</h2>';
+						the_field('services_text_field');
+					}
+				}
+			}
+			wp_reset_postdata();
+		}
+	}
+
 	?>
 
 
